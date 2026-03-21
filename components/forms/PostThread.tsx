@@ -42,7 +42,12 @@ function PostThread({ userId }: Props) {
     await createThread({
       text: values.thread,
       author: userId,
-      communityId: organization ? organization.id : null,
+
+      // ✅ IMPORTANT: pass org details properly
+      communityId: organization?.id || null,
+      communityName: organization?.name || null,
+      communityImage: organization?.imageUrl || null,
+
       path: pathname,
     });
 
@@ -52,24 +57,39 @@ function PostThread({ userId }: Props) {
   return (
     <Form {...form}>
       <form
-        className='mt-10 flex flex-col justify-start gap-10'
+        className='mt-10 flex flex-col gap-10'
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <FormField
           control={form.control}
           name='thread'
           render={({ field }) => (
-            <FormItem className='flex w-full flex-col gap-3'>
+            <FormItem>
               <FormLabel className='text-base-semibold text-light-2'>
                 Content
               </FormLabel>
-              <FormControl className='no-focus border border-dark-4 bg-dark-3 text-light-1'>
-                <Textarea rows={15} {...field} />
+              <FormControl>
+                <Textarea
+                  rows={15}
+                  placeholder='What’s on your mind?'
+                  {...field}
+                  className='no-focus border border-dark-4 bg-dark-3 text-light-1'
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
+        {/* ✅ SHOW CURRENT ACCOUNT */}
+        {organization && (
+          <p className='text-sm text-gray-400'>
+            Posting as:{" "}
+            <span className='text-primary-500'>
+              {organization.name}
+            </span>
+          </p>
+        )}
 
         <Button type='submit' className='bg-primary-500'>
           Post Tangle

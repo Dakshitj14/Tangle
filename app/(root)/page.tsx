@@ -1,3 +1,4 @@
+export const revalidate = 0;
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
@@ -6,6 +7,8 @@ import Pagination from "@/components/shared/Pagination";
 
 import { fetchPosts } from "@/lib/actions/thread.actions";
 import { fetchUser } from "@/lib/actions/user.actions";
+
+// export const revalidate = 0;
 
 async function Home({
   searchParams,
@@ -43,6 +46,7 @@ async function Home({
                 community={post.community}
                 createdAt={post.createdAt}
                 comments={post.children}
+                likes={post.likes} // ✅ IMPORTANT
               />
             ))}
           </>

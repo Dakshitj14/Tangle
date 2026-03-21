@@ -4,7 +4,9 @@
 
 // Resource: https://docs.svix.com/receiving/verifying-payloads/why
 // It's a good practice to verify webhooks. Above article shows why we should do it
+export const runtime = "nodejs";
 import { Webhook, WebhookRequiredHeaders } from "svix";
+// export const runtime = "nodejs";
 import { headers } from "next/headers";
 
 import { IncomingHttpHeaders } from "http";
@@ -46,7 +48,11 @@ export const POST = async (request: Request) => {
 
   // Activitate Webhook in the Clerk Dashboard.
   // After adding the endpoint, you'll see the secret on the right side.
-  const wh = new Webhook(process.env.NEXT_CLERK_WEBHOOK_SECRET || "");
+  if (!process.env.NEXT_CLERK_WEBHOOK_SECRET) {
+  throw new Error("Missing NEXT_CLERK_WEBHOOK_SECRET");
+}
+
+const wh = new Webhook(process.env.NEXT_CLERK_WEBHOOK_SECRET);
 
   let evnt: Event | null = null;
 

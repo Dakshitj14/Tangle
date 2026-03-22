@@ -236,6 +236,7 @@ export async function deleteThread(id: string, path: string): Promise<void> {
 }
 
 // ================= FETCH THREAD BY ID =================
+// ================= FETCH THREAD BY ID =================
 export async function fetchThreadById(threadId: string) {
   await connectToDB();
 
@@ -256,11 +257,14 @@ export async function fetchThreadById(threadId: string) {
       },
     });
 
+  if (!thread) throw new Error("Thread not found");
+
   return {
     _id: thread._id.toString(),
     text: thread.text,
     parentId: thread.parentId?.toString() || null,
     createdAt: thread.createdAt.toString(),
+    likes: thread.likes || [], // ✅ FIXED
 
     author: {
       id: thread.author._id.toString(),
@@ -280,6 +284,11 @@ export async function fetchThreadById(threadId: string) {
     children: thread.children.map((child: any) => ({
       _id: child._id.toString(),
       text: child.text,
+      parentId: child.parentId?.toString() || null,
+      createdAt: child.createdAt?.toString(),
+
+      likes: child.likes || [], // ✅ FIXED (IMPORTANT)
+
       author: {
         id: child.author._id.toString(),
         name: child.author.name,
